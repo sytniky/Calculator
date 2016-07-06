@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String LOG_TAG = MainActivity.class.getSimpleName();
+    public static final String EXPRESSION_KEY = "expression";
+    public static final String CURRENT_OPERATOR_KEY = "currnetOperator";
+    public static final String RESULT_KEY = "result";
     private TextView screen;
     private String expression = "";
     private String currnetOperator = "";
@@ -20,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d(LOG_TAG, "onCreate()");
 
         screen = (TextView) findViewById(R.id.tvScreen);
 
@@ -39,6 +45,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnPlus).setOnClickListener(this);
         findViewById(R.id.btnClean).setOnClickListener(this);
         findViewById(R.id.btnEqual).setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(LOG_TAG, "onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(LOG_TAG, "onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(LOG_TAG, "onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy()");
+    }
+
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//        super.onSaveInstanceState(outState, outPersistentState);
+////        outState.putString(EXPRESSION_KEY, expression);
+////        outState.putString(CURRENT_OPERATOR_KEY, currnetOperator);
+////        outState.putString(RESULT_KEY, result);
+//        Log.d(LOG_TAG, "onSaveInstanceState()");
+//    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG, "onSaveInstanceState()");
+        outState.putString(EXPRESSION_KEY, expression);
+        outState.putString(CURRENT_OPERATOR_KEY, currnetOperator);
+        outState.putString(RESULT_KEY, result);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d(LOG_TAG, "onRestoreInstanceState()");
+        expression = savedInstanceState.getString(EXPRESSION_KEY);
+        currnetOperator = savedInstanceState.getString(CURRENT_OPERATOR_KEY);
+        result = savedInstanceState.getString(RESULT_KEY);
+        Log.d(LOG_TAG, "expression: " + expression);
+        Log.d(LOG_TAG, "currnetOperator: " + currnetOperator);
+        Log.d(LOG_TAG, "result: " + result);
+
+        updateScreen();
     }
 
     @Override
@@ -63,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void onClickNumber(View v) {
         Button btn = (Button) v;
-        Log.d("MainActivity", "onClickNumber: " + btn.getText().toString());
+        Log.d(LOG_TAG, "onClickNumber: " + btn.getText().toString());
 
         if (result != "") {
             clean();
@@ -75,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void onClickOperator(View v) {
         Button btn = (Button) v;
-        Log.d("MainActivity", "onClickOperator: " + btn.getText().toString());
+        Log.d(LOG_TAG, "onClickOperator: " + btn.getText().toString());
 
         if (result != "" || getResult()) {
             String tmpResult = result;
@@ -86,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         char lastChar = expression.charAt(expression.length()-1);
         if (isOperator(lastChar)) {
             expression = expression.replace(lastChar, btn.getText().charAt(0));
-            Log.d("MainActivity", "onClickOperator: expression: " + expression);
+            Log.d(LOG_TAG, "onClickOperator: expression: " + expression);
         } else {
             expression += btn.getText();
         }
@@ -97,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void onClickClean(View v) {
         Button btn = (Button) v;
-        Log.d("MainActivity", "onClickClean: " + btn.getText().toString());
+        Log.d(LOG_TAG, "onClickClean: " + btn.getText().toString());
         clean();
         updateScreen();
     }
@@ -121,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void onClickEqual(View v) {
         Button btn = (Button) v;
-        Log.d("MainActivity", "onClickEqual: " + btn.getText().toString());
+        Log.d(LOG_TAG, "onClickEqual: " + btn.getText().toString());
         if (!getResult()) return;
         expression += "\n" + result;
         updateScreen();
@@ -146,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             result = e.getMessage();
         }
-        Log.d("MainActivity", "getResult: " + result);
+        Log.d(LOG_TAG, "getResult: " + result);
         return true;
     }
 
